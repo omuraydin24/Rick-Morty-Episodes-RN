@@ -1,20 +1,23 @@
 import { StyleSheet, Dimensions } from 'react-native';
 
-const { width, height } = Dimensions.get('window');
-
 export default StyleSheet.create({
-  episodeContainer: {
-    padding: 10,
-    borderWidth: 1,
-    borderColor: 'grey',
-    flexDirection: "row",
+  container: {
+    backgroundColor: "#3d9eac",
   },
-  name: {
-    color: "black"
+  title: {
+    marginVertical: 5,
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#ecede8",
+    textAlign: "center",
 
   },
-  left: {
+  listContainer: {
+    marginBottom: 90
+  },
+  loading: {
     flex: 1,
-    
+    justifyContent: 'center'
   }
+
 })

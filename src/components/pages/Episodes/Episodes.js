@@ -1,20 +1,48 @@
 import React, { useEffect, useState } from 'react';
-import { View, FlatList, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, FlatList, Text, ActivityIndicator } from 'react-native';
 
 import styles from "./Episodes.style";
 
 import axios from 'axios';
+import MainCard from '../../Cards/MainCard';
+
+const URL = "https://rickandmortyapi.com/api/episode";
 
 const Episodes = ({ navigation }) => {
-  const [episodeData, setEpisodeData] = useState();
+  const [episodeData, setEpisodeData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  async function fetchData() {
+    try {
+      const response = await axios.get(URL);
+      setEpisodeData(response.data.results);
+    } catch (err) {
+      Alert.alert(err.message);
+      setError(true)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    axios
-      .get("https://rickandmortyapi.com/api/episode")
-      .then((response) => response.data)
-      .then((data) => setEpisodeData(data.results))
-      .catch((error) => console.log(error))
+    fetchData()
+    // console.log(episodeData)
   }, [])
+
+  if (loading) {
+    return <View style={styles.loading}>
+      <ActivityIndicator size="large" color="#2a3c5f" />
+    </View>
+  }
+
+  if (error) {
+    return (
+      <View>
+        <Text>Error</Text>
+      </View>
+    );
+  }
 
   const handleDetail = EpisodeID => {
     navigation.navigate('DetailScreen', { EpisodeID });
@@ -22,26 +50,20 @@ const Episodes = ({ navigation }) => {
 
   const renderEpisodes = ({ item }) => {
     return (
-      <View style={styles.episodeContainer}>
-        <TouchableWithoutFeedback style={{backgroundColor: "red"}} onPress={() => handleDetail(item.id)}>
-          <View>
-            <View style={styles.left}>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text>{item.episode}</Text>
-            </View>
-            <Text>{item.air_date}</Text>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+      <MainCard data={item} onPress={() => handleDetail(item.id)} />
     )
   }
+
   return (
-    <View>
-      <FlatList
-        renderItem={renderEpisodes}
-        data={episodeData}
-        keyExtractor={item => item.id}
-      />
+    <View style={styles.container}>
+      <Text style={styles.title}>All Episodes</Text>
+      <View style={styles.listContainer}>
+        <FlatList
+          renderItem={renderEpisodes}
+          data={episodeData}
+          keyExtractor={item => item.id}
+        />
+      </View>
     </View>
   );
 }

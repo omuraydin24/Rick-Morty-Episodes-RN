@@ -1,21 +1,24 @@
 import React from 'react';
 
 
+import { View, TouchableOpacity, Text } from 'react-native';
 
-import { View, StyleSheet, Text } from 'react-native';
+import styles from './MainCard.style'
 
-
-
-const Maincard = () => {
+const Maincard = ({ data, onPress }) => {
   return (
-    <View>
-      <Text>
-        Main Card
-      </Text>
+    <View style={styles.episodeContainer}>
+      <TouchableOpacity onPress={onPress}>
+        <View>
+          <View>
+            <Text style={styles.name}>{data.name}</Text>
+            <Text style={styles.episode}>{data.episode}</Text>
+            <Text style={styles.date}>{data.air_date}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
     </View>
   );
 }
-
-const styles = StyleSheet.create({})
 
 export default Maincard;
